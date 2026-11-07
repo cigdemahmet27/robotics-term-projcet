@@ -1,0 +1,15 @@
+# OS / editors
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Future code / data
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+data/raw/
+*.bag
+*.mcap
+*.db3
+logs/
