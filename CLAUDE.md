@@ -8,7 +8,7 @@ This is the term project for YZV406E Robotics (Prof. Dr. Sanem Sarıel, Fall 202
 
 Layout:
 - `00_course/`: `Project Proposal Guidelines.pdf` (the **authoritative source**; read it with `pdftotext`) and `requirements_summary.md`.
-- `01_papers/`: the 4 team papers (`pdf/`) plus one explanation file per paper and a comparison `README.md`. Venues and years were verified from the PDFs.
+- `01_papers/`: the 5 team papers (`pdf/`) plus one explanation file per paper and a comparison `README.md`. Venues and years were verified from the PDFs.
 - `02_primary_paper_deep_dive/`: the **primary paper** (Mohammad, Higgins, Bezzo, ICRA 2024, GP-based proactive failure prediction + recovery): background knowledge, walkthrough, limitations L1–L8.
 - `03_our_project/`: our plan. C1 = planner-agnostic, uncertainty-aware (Φ(m+βs)), conformal-calibrated risk with hysteresis. C2 = progress-aware recovery with a decaying failure-memory costmap mask. Also system/env, evaluation (RQ1–3, baselines B0–B3), team/timeline.
 - `04_proposal/Proposal_Draft.md`: the submission text (keep it consistent with `03_our_project/`).

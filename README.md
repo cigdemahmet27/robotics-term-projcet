@@ -19,8 +19,8 @@
 |---|---|---|
 | 1 | [`00_course/requirements_summary.md`](00_course/requirements_summary.md) | What the instructor wants from us |
 | 2 | [`GLOSSARY.md`](GLOSSARY.md) | Every robotics/ML term we use, explained simply. Keep it open while reading |
-| 3 | [`01_papers/README.md`](01_papers/README.md) | Overview + comparison of the 4 papers |
-| 4 | `01_papers/1_…` → `4_…` | One careful explanation per paper + "what we can take from it" |
+| 3 | [`01_papers/README.md`](01_papers/README.md) | Overview + comparison of the 5 papers |
+| 4 | `01_papers/1_…` → `5_…` | One careful explanation per paper + "what we can take from it" |
 | 5 | [`02_primary_paper_deep_dive/`](02_primary_paper_deep_dive/README.md) | ⭐ The primary paper: background knowledge → walkthrough → limitations |
 | 6 | [`03_our_project/`](03_our_project/README.md) | ⭐ What *we* are going to build and test, in detail |
 | 7 | [`04_proposal/Proposal_Draft.md`](04_proposal/Proposal_Draft.md) | The proposal text we submit (≤ 4 pages + 1 page refs) |
@@ -37,13 +37,14 @@ Term_projcet/
 │   ├── Project Proposal Guidelines.pdf
 │   └── requirements_summary.md
 │
-├── 01_papers/                    ← the 4 papers the team collected
+├── 01_papers/                    ← the 5 papers the team collected
 │   ├── README.md                 ← comparison table + which paper plays which role
 │   ├── pdf/                      ← original PDFs
 │   ├── 1_GP_failure_prediction_ICRA2024.md   ⭐ primary (short version)
 │   ├── 2_Air_Bumper_ICRA2024.md
 │   ├── 3_DDP_IROS2025.md
-│   └── 4_LA-LIO_IROS2024.md
+│   ├── 4_LA-LIO_IROS2024.md
+│   └── 5_Interactive-FAR_IROS2024.md
 │
 ├── 02_primary_paper_deep_dive/   ← the primary paper, explained from zero
 │   ├── README.md
