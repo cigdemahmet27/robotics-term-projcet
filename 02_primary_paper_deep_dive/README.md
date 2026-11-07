@@ -6,8 +6,9 @@ The paper is 7 pages written for robotics researchers, so it **assumes a lot of 
 
 | File | Content | Read when |
 |---|---|---|
-| [`01_background_knowledge.md`](01_background_knowledge.md) | Everything the paper assumes you know: navigation stacks, maps, planners, safe corridors, Bézier curves, MPC, Gaussian Processes, probability/risk, sampling, ROS/Gazebo | **First**, before opening the PDF |
+| [`00_simple_explanation.md`](00_simple_explanation.md) ⭐ | The whole story in simple words: what the robot does, what C and t_C mean, what the paper does, which problems we solve and how | **Start here.** No background needed |
+| [`01_background_knowledge.md`](01_background_knowledge.md) | Everything the paper assumes you know: navigation stacks, maps, planners, safe corridors, Bézier curves, MPC, Gaussian Processes, probability/risk, sampling, ROS/Gazebo | Next, before opening the PDF |
 | [`02_paper_walkthrough.md`](02_paper_walkthrough.md) | Section-by-section explanation of the paper, every equation in words, with a toy numeric example | Read side by side with the PDF |
 | [`03_limitations_and_open_questions.md`](03_limitations_and_open_questions.md) | Critical analysis: what is missing or weak, with evidence, and what that means for us | After the walkthrough. This feeds our proposal Section 4 |
 
-**Goal:** after reading these three files, every team member should be able to explain the paper on a whiteboard and answer the instructor's questions about it.
+**Goal:** after reading these four files, every team member should be able to explain the paper on a whiteboard and answer the instructor's questions about it.

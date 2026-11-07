@@ -21,7 +21,7 @@
 | 2 | [`GLOSSARY.md`](GLOSSARY.md) | Every robotics/ML term we use, explained simply. Keep it open while reading |
 | 3 | [`01_papers/README.md`](01_papers/README.md) | Overview + comparison of the 5 papers |
 | 4 | `01_papers/1_…` → `5_…` | One careful explanation per paper + "what we can take from it" |
-| 5 | [`02_primary_paper_deep_dive/`](02_primary_paper_deep_dive/README.md) | ⭐ The primary paper: background knowledge → walkthrough → limitations |
+| 5 | [`02_primary_paper_deep_dive/`](02_primary_paper_deep_dive/README.md) | ⭐ The primary paper: simple explanation → background knowledge → walkthrough → limitations. **New teammates: read `00_simple_explanation.md` first** |
 | 6 | [`03_our_project/`](03_our_project/README.md) | ⭐ What *we* are going to build and test, in detail |
 | 7 | [`04_proposal/Proposal_Draft.md`](04_proposal/Proposal_Draft.md) | The proposal text we submit (≤ 4 pages + 1 page refs) |
 
@@ -48,6 +48,7 @@ Term_projcet/
 │
 ├── 02_primary_paper_deep_dive/   ← the primary paper, explained from zero
 │   ├── README.md
+│   ├── 00_simple_explanation.md     ← ⭐ start here: the project in simple words
 │   ├── 01_background_knowledge.md   ← what the paper assumes you already know
 │   ├── 02_paper_walkthrough.md      ← section by section, every equation
 │   └── 03_limitations_and_open_questions.md
