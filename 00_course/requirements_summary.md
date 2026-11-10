@@ -51,13 +51,4 @@
 
 ## ✅ Checklist of our proposal against the guidelines
 
-| Requirement | Where we satisfy it | Status |
-|---|---|---|
-| Approved venue, 2024–26 | ICRA 2024 | ✅ |
-| Original research | Yes | ✅ |
-| Well-cited | Check Scholar | ⚠️ |
-| Limitation identified | `02_primary_paper_deep_dive/03_…` | ✅ |
-| Solution proposed | `03_our_project/02_method.md` | ✅ |
-| RQs + baselines + metrics + experiments | `03_our_project/04_evaluation_plan.md` | ✅ |
-| Distinct roles | `03_our_project/05_…` | ⚠️ names missing |
-| ≤ 4 + 1 pages | `04_proposal/` | ⚠️ check after formatting |
+The full, up-to-date checklist is in [`../04_proposal/00_Template_and_Checklist.md`](../04_proposal/00_Template_and_Checklist.md).

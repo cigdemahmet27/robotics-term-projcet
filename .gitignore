@@ -13,3 +13,12 @@ data/raw/
 *.mcap
 *.db3
 logs/
+
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+04_proposal/latex/proposal.pdf

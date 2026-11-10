@@ -1,6 +1,6 @@
 # Glossary (A–Z)
 
-Short, plain-language definitions. For longer explanations see [`02_primary_paper_deep_dive/01_background_knowledge.md`](02_primary_paper_deep_dive/01_background_knowledge.md).
+Short, plain-language definitions. Longer explanations of navigation and ML basics are in [`99_archive/gp_direction/02_primary_paper_deep_dive/01_background_knowledge.md`](99_archive/gp_direction/02_primary_paper_deep_dive/01_background_knowledge.md).
 
 | Term | Meaning |
 |---|---|

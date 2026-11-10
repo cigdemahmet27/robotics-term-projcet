@@ -4,8 +4,8 @@ The team collected five papers. All five were read in full (07.11.2026; paper 5 
 
 | # | Short name | Full title | Venue | Pages | DOI | Role in our project |
 |---|---|---|---|---|---|---|
-| 1 ⭐ | **GP failure prediction** | A GP-based Robust Motion Planning Framework for Agile Autonomous Robot Navigation and Recovery in Unknown Environments | ICRA 2024 | 2418–2424 | 10.1109/ICRA57147.2024.10610382 | **Primary paper** |
-| 2 | **Air Bumper** | Air Bumper: A Collision Detection and Reaction Framework for Autonomous MAV Navigation | ICRA 2024 | 15735–15741 | 10.1109/ICRA57147.2024.10611410 | Secondary: failure-memory map idea, reactive baseline |
+| 1 | **GP failure prediction** | A GP-based Robust Motion Planning Framework for Agile Autonomous Robot Navigation and Recovery in Unknown Environments | ICRA 2024 | 2418–2424 | 10.1109/ICRA57147.2024.10610382 | Related work (proactive failure prediction). Was primary until 10.11.2026 |
+| 2 ⭐ | **Air Bumper** | Air Bumper: A Collision Detection and Reaction Framework for Autonomous MAV Navigation | ICRA 2024 | 15735–15741 | 10.1109/ICRA57147.2024.10611410 | ⭐ **Primary paper** (decided 10.11.2026) |
 | 3 | **DDP** | Decremental Dynamics Planning for Robot Navigation | IROS 2025 | 4559–4565 | 10.1109/IROS60139.2025.11246580 | Secondary: BARN benchmark, metrics, speed protocol |
 | 4 | **LA-LIO** | LA-LIO: Robust Localizability-Aware LiDAR-Inertial Odometry for Challenging Scenes | IROS 2024 | 10145–10152 | 10.1109/IROS58592.2024.10802825 | Secondary: hysteresis switching; localization failures as future work |
 | 5 | **Interactive-FAR** | Interactive-FAR: Interactive, Fast and Adaptable Routing for Navigation Among Movable Obstacles in Complex Unknown Environments | IROS 2024 | 5402–5409 | 10.1109/IROS58592.2024.10802169 | Secondary: try → sense → update cost → re-plan loop; SPL metric |
@@ -34,7 +34,7 @@ They all deal with **things going wrong while a robot navigates an unknown place
                └─────────────────────────────┘   └──────────────────────────┘
 ```
 
-Our project lives in the **top-left box** (Paper 1). We take one idea each from Papers 2, 3, 4 and 5.
+Our project builds on **Paper 2** (physical layer: detect a collision, react, remember it), applied to a ground robot. Papers 1 and 5 are cited as related work.
 
 ## Comparison for our needs
 
@@ -51,6 +51,6 @@ Our project lives in the **top-left box** (Paper 1). We take one idea each from 
 
 ## Decision
 
-**Paper 1 is the primary paper.** The reasons are explained in [`1_GP_failure_prediction_ICRA2024.md`](1_GP_failure_prediction_ICRA2024.md) and in depth in [`../02_primary_paper_deep_dive/`](../02_primary_paper_deep_dive/README.md).
+**Paper 2 (Air Bumper) is the primary paper** (team decision, 10.11.2026). See [`2_Air_Bumper_ICRA2024.md`](2_Air_Bumper_ICRA2024.md) and the proposal [`../04_proposal/Proposal_AirBumper.md`](../04_proposal/Proposal_AirBumper.md). The earlier GP-based plan is kept in [`../99_archive/gp_direction/`](../99_archive/gp_direction/).
 
-⚠️ Open item: check citation counts on Google Scholar for all five (the "well-cited" requirement).
+⚠️ Open item: check the Google Scholar citation count of Air Bumper (the "well-cited" requirement).

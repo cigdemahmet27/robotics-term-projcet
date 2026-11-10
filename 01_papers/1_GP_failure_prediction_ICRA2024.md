@@ -3,7 +3,7 @@
 > N. Mohammad, J. Higgins, N. Bezzo, "A GP-based Robust Motion Planning Framework for Agile Autonomous Robot Navigation and Recovery in Unknown Environments," *ICRA 2024*, pp. 2418–2424. doi:10.1109/ICRA57147.2024.10610382 · arXiv:2402.01617 · Project page: bezzorobotics.com/nm-icra24
 > Authors: University of Virginia (Bezzo lab), **2nd place at the ICRA 2022 BARN navigation challenge**.
 
-This is the **short version**. The full, from-zero explanation is in [`../02_primary_paper_deep_dive/`](../02_primary_paper_deep_dive/README.md).
+This is the **short version**. The full, from-zero explanation is in [`../99_archive/gp_direction/02_primary_paper_deep_dive/`](../99_archive/gp_direction/02_primary_paper_deep_dive/README.md) (archived: this was the primary paper until 10.11.2026).
 
 ## 1. The problem in plain words
 

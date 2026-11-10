@@ -1,4 +1,6 @@
-# Paper 2 – Air Bumper (ICRA 2024)
+# Paper 2 – Air Bumper (ICRA 2024) ⭐ PRIMARY PAPER
+
+> ⭐ **Primary paper since 10.11.2026.** Our full plan built on it is in [`../04_proposal/Proposal_AirBumper.md`](../04_proposal/Proposal_AirBumper.md). The "what we take" table at the end of this file was written when it was a secondary paper; the proposal supersedes it.
 
 > R. Wang, Z. Guo, Y. Chen, X. Wang, B. M. Chen, "Air Bumper: A Collision Detection and Reaction Framework for Autonomous MAV Navigation," *ICRA 2024*, pp. 15735–15741. doi:10.1109/ICRA57147.2024.10611410
 > Chinese University of Hong Kong. Code: github.com/ryrobotics/air_bumper (ROS 1). Video: youtu.be/FVQGmqUTyp4
