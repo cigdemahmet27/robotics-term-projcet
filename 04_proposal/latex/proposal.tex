@@ -19,26 +19,36 @@
 
 \begin{document}
 
-\title{Bump Once, Remember Wisely: Calibrated Collision Detection and Forgetting Memory for Aerial Robots Among Invisible Obstacles}
+\title{Calibrated collision detection and selective memory for aerial robots among invisible obstacles}
 
 \author{\IEEEauthorblockN{Egemen Çevik (150220012), Cumali Sarı (150230038), Ahmet Enes Çiğdem (150220079)}
-\IEEEauthorblockA{YZV406E Robotics -- Term Project Proposal (Round 1), Istanbul Technical University, 10.11.2026}}
+\IEEEauthorblockA{YZV406E Robotics: Term Project Proposal (Round 1), Istanbul Technical University, 10.11.2026}}
 
 \maketitle
 
 %==================================================================
-\section{Problem Description and Primary Reference Paper}
+\section{Problem description and primary reference paper}
 
-\textbf{Problem.} Autonomous micro aerial vehicles (MAVs) navigate cluttered indoor spaces with LiDAR, assuming that every obstacle is seen. Two common cases break this assumption: (1)~\emph{invisible obstacles}---glass walls, doors and windows, transparent curtains and thin wires let laser beams pass through, so the map shows free space and the planner flies into them; and (2)~\emph{obstacles that enter unseen}, e.g., from above or below the LiDAR's limited vertical field of view. In both cases a collision cannot be avoided from perception alone. The MAV must therefore (i)~\emph{detect} that it collided, (ii)~\emph{react} safely before it crashes, and (iii)~\emph{remember} the obstacle so that it does not hit it again. Remembering creates a new difficulty: if the obstacle was a person, an object that is later moved, or a door that later opens, a permanent memory turns it into a \emph{phantom wall}. A \emph{false} detection does the same and can make the goal unreachable. The project addresses the suggested topic \emph{Robot Failure Detection and Recovery}. \textbf{Our problem} is to detect MAV collisions with a \emph{known} false-alarm rate, and to remember them selectively: keep invisible static obstacles, forget transient ones and false alarms.
+Autonomous micro aerial vehicles (MAVs) use LiDAR to navigate cluttered indoor spaces. Their navigation depends on detecting obstacles, but two common cases leave gaps in perception. Glass walls, doors and windows, transparent curtains and thin wires can let laser beams pass through. The map then shows free space, and the planner directs the MAV into the obstacle. Obstacles can also enter from above or below the LiDAR's limited vertical field of view without being seen.
 
-\textbf{Primary reference paper.} R.~Wang \emph{et al.}, ``Air Bumper: A Collision Detection and Reaction Framework for Autonomous MAV Navigation,'' \emph{IEEE ICRA 2024}, pp.~15735--15741~\cite{airbumper}. It is an original research paper from an approved venue (ICRA) in the required period. A caged MAV with a 3D LiDAR uses only its IMU to: \emph{detect} a collision when any body-axis acceleration exceeds a fixed threshold ($a^*=20$\,m/s$^2$, sliding window $N=10$); \emph{estimate} its direction and contact point on a spherical cage; \emph{react} immediately with a position setpoint away from the hit, blended with the gradient of the Euclidean distance transform (EDT) of known obstacles; and \emph{remember} it by inserting the contact patch into the volumetric map as a ``collision sensor'' whose marks are \emph{never cleared} by the LiDAR. Recovery from glass doors is shown in Gazebo, and from glass and stick hits on a real MAV (detection $\approx$0.18\,s, recovery $<$1\,s, 10 trials).
+Perception alone cannot prevent collisions in these cases. The MAV needs to detect contact, react before it crashes, and remember the obstacle to avoid another hit.
 
-\textbf{Why this paper.} It is an early framework that combines collision detection, reaction \emph{and} mapping in a standard LiDAR navigation stack using only the IMU. It turns failures into map knowledge (``failure as a sensor''), which is directly a \emph{failure detection and recovery} problem. It is open source~\cite{airbumpercode} and validated in simulation and on hardware. Since its preprint (July 2023) it has been cited by follow-up work on contact-aware flight, e.g., whisker-based tactile navigation in \emph{Nature Communications}~\cite{whisker} and a survey of LiDAR-based aerial vehicles in \emph{IEEE/ASME T-Mech}~\cite{lidarsurvey} (7 citing papers on Semantic Scholar, Nov.~2026). Its design choices are simple and explicit (fixed threshold, permanent marks), so their limitations can be analyzed and improved within a term project. Related work handles failures differently: \cite{gp} predicts planner failures \emph{before} they happen from LiDAR geometry, and \cite{ifar} adapts edge costs online from contact feedback; both assume the LiDAR sees every obstacle, which is exactly what fails with glass.
+Permanent memory creates a problem when a person moves away, an object is removed or a door opens. The map retains a phantom wall that can make the goal unreachable. False detections can block routes in the same way.
 
-\textbf{Significance.} Indoor MAVs for inspection, warehouse inventory and search and rescue operate around glass facades, windows and partitions, and among people and moving objects. A collision detector whose false-alarm rate is unknown, and a map that never forgets, both cause mission failures: false reactions interrupt flight, and phantom walls block routes. We keep the paper's platform (a caged MAV) and its detect--react--remember pipeline, and improve the two weakest parts: \emph{how} a collision is declared and \emph{how long} it is remembered.
+Our project addresses the suggested topic Robot Failure Detection and Recovery. We aim to detect MAV collisions at a known false-alarm rate and retain collision memories selectively: invisible static obstacles should remain in the map, while transient obstacles and false alarms should be forgotten.
+
+Our primary reference is R.~Wang \emph{et al.}, ``Air Bumper: A Collision Detection and Reaction Framework for Autonomous MAV Navigation,'' \emph{IEEE ICRA 2024}, pp.~15735--15741~\cite{airbumper}. This original research paper was published in 2024 at ICRA, an approved venue, within the required period. Its caged MAV has a 3D LiDAR and uses the IMU as its only collision sensor. It detects collisions when any body-axis acceleration exceeds a fixed threshold ($a^*=20$\,m/s$^2$, sliding window $N=10$), then estimates the collision direction and contact point on a spherical cage. It reacts immediately by setting a position away from the contact, blended with the gradient of the Euclidean distance transform (EDT), which gives the distance to known obstacles. The contact patch is added to the volumetric map as a ``collision sensor'' mark that LiDAR observations never clear.
+
+The paper demonstrates recovery from glass doors in Gazebo and from glass and stick impacts on a real MAV. Across 10 real trials, detection takes approximately 0.18\,s and recovery takes less than 1\,s.
+
+We chose Air Bumper because it is an early framework that combines collision detection, reaction and mapping in a standard LiDAR stack using only the IMU for collision sensing. It treats failure as a sensor by adding contact information to the map, which fits our project's focus on detection and recovery. The implementation is open source~\cite{airbumpercode} and has been validated in simulation and on hardware. Its fixed threshold and permanent collision marks also give us specific design choices to investigate within a term project.
+
+Since its preprint in July 2023, follow-up work has cited Air Bumper, including whisker-based tactile navigation in \emph{Nature Communications}~\cite{whisker} and a survey of LiDAR-based aerial vehicles in \emph{IEEE/ASME T-Mech}~\cite{lidarsurvey}. Semantic Scholar lists 7 citing papers in Nov.~2026. Related work~\cite{gp} predicts planner failures from LiDAR geometry before they occur, while~\cite{ifar} adapts edge costs online using contact feedback. Both assume that LiDAR detects every obstacle, an assumption that fails with glass.
+
+Indoor MAVs used for inspection, warehouse inventory and search and rescue encounter glass facades, windows and partitions, as well as people and moving objects. False reactions interrupt flight, and phantom walls block routes. We retain the paper's caged MAV platform and its detection, reaction and memory pipeline, focusing on how the system declares a collision and how long it remembers the contact.
 
 %==================================================================
-\section{Environment, Benchmark, and Dataset}
+\section{Environment, benchmark, and dataset}
 
 \begin{table}[t]
 \caption{Software and simulation environment (all free).}
@@ -48,29 +58,29 @@
 \toprule
 \textbf{Component} & \textbf{Choice} & \textbf{Justification}\\
 \midrule
-Middleware & ROS~2 Jazzy~\cite{ros2} in Docker & LTS, free; identical setup on every laptop\\
-Autopilot & PX4 SITL~\cite{px4} via uXRCE-DDS (\texttt{px4\_msgs}), offboard position/velocity setpoints & Same autopilot as~\cite{airbumper}; reaction setpoints go directly to the low-level controller\\
-Simulator & Gazebo Harmonic~\cite{gazebo} (PX4 \texttt{gz} integration), headless batch runs & Same simulator family as~\cite{airbumper}; free ground truth; \emph{WindEffects} for gusts\\
-Vehicle & PX4 x500 quadrotor with a spherical collision cage (radius $l=0.25$\,m), 3D LiDAR configured like a Livox Mid-360 (360$^\circ\times$59$^\circ$), IMU (250\,Hz, noise + bias), cage contact sensor & Mirrors the paper's caged MAV; contact sensor gives ground-truth labels and is \emph{not} used by the detector\\
-Map \& planner & Local voxel occupancy map (0.1\,m) with EDT~\cite{edt}, A$^*$ path search, velocity-limited setpoint follower & Lightweight Python replacement for the paper's GPU mapper and GTO-MPC; exposes cost and speed limits per voxel\\
-Invisible obstacles & Models with collision but no visual geometry & GPU LiDAR renders visuals only, so beams pass through while physics blocks: glass as in~\cite{airbumper}\\
-Moving / transient & Joint/trajectory-driven panels and poles, doors opening at random times, objects removed after contact, a ``stick'' hitting from outside the LiDAR FOV & Creates ``remembered but gone'' cases and the paper's stick test\\
+Middleware & ROS~2 Jazzy~\cite{ros2} in Docker & A free LTS release that provides the same setup on every laptop\\
+Autopilot & PX4 SITL~\cite{px4} via uXRCE-DDS (\texttt{px4\_msgs}), offboard position/velocity setpoints & Uses the same autopilot as~\cite{airbumper}; reaction setpoints go directly to the low-level controller\\
+Simulator & Gazebo Harmonic~\cite{gazebo} (PX4 \texttt{gz} integration), headless batch runs & Uses the same simulator family as~\cite{airbumper}, provides ground truth at no cost and supports gusts through \emph{WindEffects}\\
+Vehicle & PX4 x500 quadrotor with a spherical collision cage (radius $l=0.25$\,m), 3D LiDAR configured like a Livox Mid-360 (360$^\circ\times$59$^\circ$), IMU (250\,Hz, noise + bias), cage contact sensor & Matches the paper's caged MAV; the contact sensor provides ground-truth labels and is not an input to the detector\\
+Map \& planner & Local voxel occupancy map (0.1\,m) with EDT~\cite{edt}, A$^*$ path search, velocity-limited setpoint follower & A lightweight Python replacement for the paper's GPU mapper and GTO-MPC, with a cost and speed limit for each voxel\\
+Invisible obstacles & Models with collision geometry but no visual geometry & The GPU LiDAR renders only visual geometry, so beams pass through while the physics engine registers contact, reproducing the glass setup in~\cite{airbumper}\\
+Moving / transient & Joint/trajectory-driven panels and poles, doors opening at random times, objects removed after contact, a ``stick'' hitting from outside the LiDAR FOV & Tests memories of obstacles that have disappeared and reproduces the paper's stick test\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Table~\ref{tab:env} summarizes the environment. Because no public benchmark contains invisible and transient obstacles for MAVs, we build a procedurally generated, seeded \textbf{scenario suite}, including the paper's own layout:
+No public benchmark contains invisible and transient obstacles for MAVs, so we will generate the scenario suite procedurally with fixed seeds, including a recreation of the paper's layout.
 \begin{itemize}
-\item \textbf{S1 -- Static glass} (60 worlds): indoor rooms and corridors with 1--4 glass walls, glass doors (re-creating the three-door world of~\cite{airbumper}) and windows at random positions and heights. Tests detection and memory on invisible static obstacles.
-\item \textbf{S2 -- Transient} (45): (a)~a glass door that opens 20--120\,s after the first contact; (b)~a visible panel blocking the shortest route, removed after contact; (c)~a pole hitting the cage from below or above the LiDAR FOV (the paper's stick test). Tests the phantom-wall problem.
-\item \textbf{S3 -- False-alarm stress} (30): \emph{no collisions}; wind gusts (WindEffects), aggressive stop-and-go and sharp turns, high-speed flight, doubled IMU noise. Measures false alarms per hour.
+\item S1: Static glass (60 worlds). Rooms and corridors with 1--4 glass walls, glass doors (recreating the three-door world of~\cite{airbumper}) and windows at random positions and heights. Tests detection and memory for invisible static obstacles.
+\item S2: Transient (45 worlds). A glass door opens 20--120\,s after the first contact; a visible panel on the shortest route is removed after contact; a pole hits the cage from below or above the LiDAR FOV (the paper's stick test). Tests phantom-wall failures.
+\item S3: False-alarm stress (30 worlds). Collision-free flights with wind gusts (WindEffects), aggressive stop-and-go and sharp turns, high-speed flight and doubled IMU noise. Measures false alarms per hour.
 \end{itemize}
-Worlds are split 50/20/30\% into train/calibration/test per set; gust and maneuver profiles unseen during calibration form an out-of-distribution test. Speeds $v_{\max}\in\{0.5,1.0,1.5\}$\,m/s. We plan $\sim$10\,h of collision-free flight for calibration (Sec.~\ref{sec:method}), a \emph{separate} collision-free test set of $\ge$50\,h to verify false-alarm rates (headless runs are cheap), and $\sim$2{,}000 labeled collisions, which fits into overnight runs with 2--3 parallel containers.
+Each set is split by world into 50/20/30\% train/calibration/test subsets. Gust and maneuver profiles absent from calibration form an out-of-distribution test. We use speeds $v_{\max}\in\{0.5,1.0,1.5\}$\,m/s.
+
+We plan to collect approximately 10\,h of collision-free flight for calibration (Sec.~\ref{sec:method}), a separate collision-free test set of $\ge$50\,h to verify false-alarm rates, and approximately 2{,}000 labeled collisions. Headless runs keep the cost of this data collection low, allowing overnight runs with 2--3 parallel containers.
 
 %==================================================================
-\section{Challenges and Limitations}
-
-Table~\ref{tab:lim} lists the limitations of~\cite{airbumper} that motivate our project, each with evidence from the paper.
+\section{Challenges and limitations}
 
 \begin{table}[t]
 \caption{Limitations of Air Bumper~\cite{airbumper}.}
@@ -80,58 +90,66 @@ Table~\ref{tab:lim} lists the limitations of~\cite{airbumper} that motivate our 
 \toprule
 \# & \textbf{Limitation (evidence)} & \textbf{Why it matters}\\
 \midrule
-L1 & Fixed, hand-tuned threshold on raw acceleration, $a^*=20$\,m/s$^2$ (Sec.~IV-A, ``experimentally determined''); no false-alarm or miss rates reported & The MAV's \emph{own} aggressive maneuvers and wind gusts also cause spikes, while soft or low-speed hits stay below $a^*$. The false-alarm rate is unknown and changes with platform, speed and wind\\
-L2 & Per-axis test $|a_x|>a^*$ \emph{or} $|a_y|>a^*$ (Sec.~IV-A) & A diagonal hit splits between axes: 25\,m/s$^2$ at 45$^\circ$ gives 17.7\,m/s$^2$ per axis and is \emph{missed}\\
-L3 & Direction from raw acceleration, $\mathbf{a}_c=-\mathbf{a}$ (Eqs.~1--4) & Commanded acceleration biases the estimated direction, and thus the recovery setpoint and the mapped patch, especially while braking or turning\\
-L4 & Permanent, top-priority marks: ``the robot remembers all obstacles it ever collides with'' (Sec.~V-C) & Right for static glass; wrong for people, moved objects, opened doors and \emph{false detections}, which become phantom walls. Detection errors (L1) are made \emph{permanent} by the map\\
-L5 & LiDAR evidence at the contact is ignored & Whether the LiDAR \emph{saw} the obstacle separates visible (already mapped, maybe moving) from invisible (must be remembered)\\
-L6 & Small, qualitative evaluation: 1 simulated world, 10 real trials & No TPR, false alarms/hour, latency or direction error; no baselines or statistics\\
+L1 & Fixed, hand-tuned threshold on raw acceleration, $a^*=20$\,m/s$^2$ (Sec.~IV-A, ``experimentally determined''); no false-alarm or miss rates reported & Aggressive maneuvers and wind gusts also cause acceleration spikes, while soft or low-speed contacts stay below $a^*$. The false-alarm rate is unknown and varies with platform, speed and wind\\
+L2 & Per-axis test $|a_x|>a^*$ or $|a_y|>a^*$ (Sec.~IV-A) & A diagonal hit splits the acceleration between axes: 25\,m/s$^2$ at 45$^\circ$ gives 17.7\,m/s$^2$ per axis, so the detector misses it\\
+L3 & Direction from raw acceleration, $\mathbf{a}_c=-\mathbf{a}$ (Eqs.~1--4) & Commanded acceleration biases the estimated direction, recovery setpoint and mapped patch, especially while braking or turning\\
+L4 & Permanent, top-priority marks: ``the robot remembers all obstacles it ever collides with'' (Sec.~V-C) & Permanent marks retain static glass, but also leave phantom walls after people move, objects are removed or doors open. The map also preserves false detections from L1\\
+L5 & LiDAR evidence at the contact is ignored & A LiDAR return distinguishes visible obstacles, which are already mapped and may move, from invisible obstacles that need collision memory\\
+L6 & Small, qualitative evaluation: 1 simulated world, 10 real trials & The evaluation provides no TPR, false alarms/hour, latency or direction-error metrics, baselines or statistics\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-These issues matter because a failure detector is only deployable when its false-alarm and miss rates are known, and because a map that never forgets turns every detection error and every moved object into a lasting navigation failure. The open questions are: \emph{Can MAV collision detection have a guaranteed false-alarm rate instead of a hand-tuned threshold? Can collision memory be selective, keeping invisible static obstacles while forgetting transient ones and its own mistakes?}
+These limitations raise two questions. Can we give MAV collision detection a guaranteed false-alarm rate in place of a hand-tuned threshold? Can the map retain invisible static obstacles while forgetting transient obstacles and false detections?
 
 %==================================================================
-\section{Proposed Method and Novel Contributions}
+\section{Proposed method and contributions}
 \label{sec:method}
 
-\textbf{Baseline reimplementation (B1, not a contribution).} We first port Air Bumper to ROS~2 and PX4 SITL: the per-axis detector ($a^*$, $N$), the sphere contact model $\mathbf{c}_c=\hat{\mathbf{C}}l$, the recovery setpoint $\mathbf{p}_r=(w\,\mathbf{G}/\|\mathbf{G}\|-(1-w)\hat{\mathbf{C}})R_d$ with $R_d=2l$ sent directly as a PX4 offboard position setpoint, and permanent, lethal collision voxels in the map.
+We will reimplement Air Bumper as baseline B1 in ROS~2 with PX4 SITL. This port is not a contribution. It includes the per-axis detector ($a^*$, $N$), the sphere contact model $\mathbf{c}_c=\hat{\mathbf{C}}l$, the recovery setpoint $\mathbf{p}_r=(w\,\mathbf{G}/\|\mathbf{G}\|-(1-w)\hat{\mathbf{C}})R_d$ with $R_d=2l$ sent directly as a PX4 offboard position setpoint, and permanent, lethal collision voxels in the map.
 
 \subsection{C1: Model-aware, calibrated collision detection (L1--L3)}
-\textbf{(a) Residual signal.} Instead of raw acceleration we use the \emph{unexpected} acceleration
+(a) Residual signal. We compute
 \begin{equation}
 \mathbf{r}(t)=\mathbf{a}^{\text{IMU}}(t)-\hat{\mathbf{a}}(t),
 \end{equation}
-where $\hat{\mathbf{a}}$ is the acceleration explained by the MAV's own commands: the commanded velocity/acceleration setpoints are passed through a closed-loop response model of the PX4 controller identified on collision-free flights, and rotated into the body frame with gravity removed. Own braking and turning are thus removed (L1, L3). Model-based residuals are the standard tool for collision detection on manipulators~\cite{haddadin}; we bring this idea to IMU-based detection on MAVs.
+where $\hat{\mathbf{a}}$ is the acceleration explained by the MAV's commands. To obtain $\hat{\mathbf{a}}$, we pass the commanded velocity/acceleration setpoints through a closed-loop response model of the PX4 controller, identified from collision-free flights, then rotate the predicted acceleration into the body frame and remove gravity. This removes the contribution of braking and turning (L1, L3). Model-based residuals are a standard tool for collision detection on manipulators~\cite{haddadin}; we apply them to IMU-based detection on MAVs.
 
-\textbf{(b) Features and score.} Over a sliding window $W=0.1$\,s we compute the peak residual \emph{norm} $\|\mathbf{r}\|$ in 3D (removes the per-axis issue, L2), the peak jerk, the angular-rate residual, and the setpoint-tracking error (pushing against an obstacle). A small, interpretable logistic regression maps them to a score $s\in[0,1]$; as an ablation, $s=\|\mathbf{r}\|$.
+(b) Features and score. Over a sliding window $W=0.1$\,s, we extract the peak 3D residual norm $\|\mathbf{r}\|$, which removes the per-axis issue in L2, along with the peak jerk, angular-rate residual and setpoint-tracking error. The tracking error captures pushing against an obstacle. A small, interpretable logistic regression model maps these features to a score $s\in[0,1]$. We also test $s=\|\mathbf{r}\|$ as an ablation.
 
-\textbf{(c) Calibrated threshold.} We set the threshold by split conformal calibration~\cite{vovk,angelopoulos} on $n$ \emph{collision-free} windows from the calibration worlds:
+(c) Calibrated threshold. We apply split conformal calibration~\cite{vovk,angelopoulos} to $n$ collision-free windows from the calibration worlds, setting
 \begin{equation}
 \hat\tau = s_{(\lceil (n+1)(1-\alpha)\rceil)},
 \end{equation}
-the $\lceil (n+1)(1-\alpha)\rceil$-th smallest score. Under exchangeability a new collision-free window triggers with probability $\le\alpha$, so the false-alarm rate is fixed in advance: $\approx\alpha\cdot3600/W$ per hour for non-overlapping windows. For a target of 1 false alarm/h with $W=0.1$\,s, $\alpha\approx2.8\cdot10^{-5}$ and $n\ge1/\alpha\approx36{,}000$ windows ($\approx$1\,h of flight; we collect $\sim$10\,h). We target $\{1,5,20\}$ false alarms/h. Since windows are temporally correlated, we verify the rate empirically on the $\ge$50\,h test set with exact Poisson (Clopper--Pearson-type) 95\% intervals; at 1/h this gives $\sim$50 expected events.
+the $\lceil (n+1)(1-\alpha)\rceil$-th smallest score. Under exchangeability, a new collision-free window triggers with probability $\le\alpha$, giving a false-alarm rate set in advance of approximately $\alpha\cdot3600/W$ per hour for non-overlapping windows. For 1 false alarm/h with $W=0.1$\,s, $\alpha\approx2.8\cdot10^{-5}$ and $n\ge1/\alpha\approx36{,}000$ windows. This requires approximately 1\,h of flight; we collect approximately 10\,h. We target $\{1,5,20\}$ false alarms/h. Because the windows are temporally correlated, we verify these rates empirically on the $\ge$50\,h test set using exact Poisson (Clopper--Pearson-type) 95\% intervals, with approximately 50 expected events at 1/h.
 
-\textbf{(d) Residual-based estimation.} The direction $\hat{\mathbf{C}}$ (azimuth and polar angle, as in~\cite{airbumper}) is computed from $-\mathbf{r}$ instead of $-\mathbf{a}$, so the recovery setpoint and the mapped contact patch are not biased by the MAV's own acceleration (L3).
+(d) Residual-based estimation. We compute the direction $\hat{\mathbf{C}}$ from $-\mathbf{r}$ in place of $-\mathbf{a}$, using azimuth and polar angle as in~\cite{airbumper}. This removes the MAV's own acceleration from the direction estimate, recovery setpoint and mapped patch (L3).
 
-\subsection{C2: Evidence-aware, forgetting collision memory (L4, L5)}
-\textbf{(a) LiDAR evidence.} At detection we inspect the LiDAR points within a $\pm10^\circ$ cone around the contact direction and label the contact \emph{visible} (a return within contact distance $+0.15$\,m: already mapped, possibly a person or a moving object), \emph{invisible} (beams pass beyond the contact: the glass case), or \emph{unseen} (direction outside the vertical FOV, e.g., the stick from below).
+\subsection{C2: Evidence-aware collision memory with forgetting (L4, L5)}
+(a) LiDAR evidence. When the detector triggers, we check LiDAR points in a $\pm10^\circ$ cone around the contact direction and assign one of three classes. A visible contact has a return within contact distance $+0.15$\,m; the obstacle is already mapped and may be a person or moving object. An invisible contact has beams that pass beyond the contact point, as with glass. An unseen contact lies outside the vertical FOV, as with a stick hitting from below.
 
-\textbf{(b) Decaying belief.} Each mark $k$ stores its contact patch, hit count $h_k$ and last-hit time $t_k$, with belief
+(b) Decaying belief. Each mark $k$ stores its contact patch, hit count $h_k$ and last-hit time $t_k$. Its belief decays as
 \begin{equation}
 b_k(t)=\exp\!\big(-(t-t_k)/\tau_{\text{class}}\big),
 \end{equation}
-$\tau_{\text{invisible}}=600$\,s, $\tau_{\text{unseen}}=60$\,s, $\tau_{\text{visible}}=10$\,s (enough to prevent an immediate re-hit; the LiDAR covers the rest). All values are tuned on calibration worlds and studied for sensitivity. A new hit within 0.3\,m merges with the mark ($h_k{+}1$, $t_k$ reset): a real glass wall is hit again and stays remembered, while a transient obstacle or a false alarm fades.
+with $\tau_{\text{invisible}}=600$\,s, $\tau_{\text{unseen}}=60$\,s and $\tau_{\text{visible}}=10$\,s. The visible-contact memory lasts long enough to prevent an immediate repeat hit; LiDAR observations cover the obstacle after that. We tune all three values on calibration worlds and run a sensitivity study. A new hit within 0.3\,m merges with the existing mark, increments the hit count ($h_k{+}1$) and resets $t_k$. Repeated contacts keep glass in memory, while memories of transient obstacles and false alarms fade.
 
-\textbf{(c) Graded costs and speed limits, not walls.} A collision voxel gets planning cost $c=c_{\max}b_k$, and is \emph{lethal only if} $h_k\ge2$ (confirmed); otherwise it is high but passable, so a single unconfirmed mark can never make the goal unreachable. Near decayed or unconfirmed marks the setpoint speed is limited to 0.3\,m/s, so re-testing a remembered spot causes at most a gentle cage contact that C1 detects quickly.
+(c) Graded costs and speed limits. The voxel cost is $c=c_{\max}b_k$, and a mark is lethal only if $h_k\ge2$. An unconfirmed mark has a high cost but remains passable, so a single mark cannot make the goal unreachable. Near decayed or unconfirmed marks, we limit the setpoint speed to 0.3\,m/s. Revisiting a marked location then causes at most a gentle cage contact that C1 detects quickly.
 
-\textbf{Implementation.} All nodes are Python (\texttt{rclpy}): \texttt{imu\_residual}, \texttt{collision\_detector}, \texttt{reaction}, \texttt{collision\_memory}, \texttt{voxel\_planner}. Memory only changes voxel costs and speed limits, so it can be added to any voxel-based planner. \textbf{Expected improvements over~\cite{airbumper}:} (1)~a false-alarm rate fixed before deployment and verified on test worlds, robust to wind and aggressive maneuvers; (2)~detection of diagonal and low-speed contacts; (3)~smaller direction errors and better-placed recovery setpoints; (4)~no phantom walls with transient obstacles or false alarms, at the cost of a small, measured increase in repeated collisions on static glass (a mark becomes lethal only after a second hit). Whether this trade-off is favorable is tested in RQ3.
+We will implement the method as Python (\texttt{rclpy}) nodes: \texttt{imu\_residual}, \texttt{collision\_detector}, \texttt{reaction}, \texttt{collision\_memory} and \texttt{voxel\_planner}. Memory only changes voxel costs and speed limits, so it can be added to any voxel-based planner.
+
+We expect the following improvements over~\cite{airbumper}: (1)~a false-alarm rate set before deployment and verified on test worlds, with robustness to wind and aggressive maneuvers; (2)~detection of diagonal and low-speed contacts; (3)~smaller direction errors and more accurately placed recovery setpoints; (4)~avoidance of phantom walls from transient obstacles and false alarms, at the cost of a small, measured increase in repeated collisions on static glass. RQ3 tests this trade-off.
 
 %==================================================================
-\section{Research Questions and Evaluation Plan}
+\section{Research questions and evaluation plan}
 
-\textbf{RQ1 (Detection):} Does C1 achieve a higher true-positive rate than Air Bumper's fixed per-axis threshold \emph{at the same false-alarm rate}, across speeds, maneuvers and wind, and does the calibrated rate hold under unseen gust profiles? \textbf{RQ2 (Estimation):} How much does residual-based estimation reduce the direction error and improve the recovery distance? \textbf{RQ3 (Memory):} Does C2 avoid phantom-wall failures with transient obstacles and false alarms, and how many extra repeated collisions with static invisible obstacles does this cost compared with permanent memory? \textbf{RQ4 (System):} Does the full system improve mission success, crashes and time-to-goal over the baselines?
+RQ1 (Detection): Does C1 achieve a higher true-positive rate than Air Bumper's fixed per-axis threshold at the same false-alarm rate across speeds, maneuvers and wind? Does the calibrated rate hold under unseen gust profiles?
+
+RQ2 (Estimation): How much does residual-based estimation reduce direction error and improve recovery distance?
+
+RQ3 (Memory): Does C2 avoid phantom-wall failures with transient obstacles and false alarms, and how many repeat collisions on static glass does it add compared with permanent memory?
+
+RQ4 (System): Does the full system increase mission success, reduce crashes and shorten time-to-goal compared with the baselines?
 
 \begin{table}[t]
 \caption{Baselines and ablations.}
@@ -141,9 +159,9 @@ $\tau_{\text{invisible}}=600$\,s, $\tau_{\text{unseen}}=60$\,s, $\tau_{\text{vis
 \toprule
 \textbf{ID} & \textbf{Detection} & \textbf{Memory} & \textbf{Represents}\\
 \midrule
-B0 & none (LiDAR-only navigation) & none & Standard MAV stack (crashes, as in~\cite{airbumper} Fig.~4b)\\
+B0 & none (LiDAR-only navigation) & none & Standard MAV stack, which crashes as in~\cite{airbumper} Fig.~4b\\
 B1 & Air Bumper~\cite{airbumper}: $a^*=20$\,m/s$^2$ and $a^*$ re-tuned on calibration worlds & permanent, lethal & Primary paper\\
-B2 & Oracle (cage contact sensor) & permanent & Perfect detection; isolates memory\\
+B2 & Oracle (cage contact sensor) & permanent & Perfect detection to isolate the effect of memory\\
 B3 & C1 & permanent & C1 alone\\
 B4 & Air Bumper & C2 & C2 alone\\
 Ours & C1 & C2 & Full method\\
@@ -151,7 +169,9 @@ Ours & C1 & C2 & Full method\\
 \end{tabularx}
 \end{table}
 
-\textbf{Baselines} are listed in Table~\ref{tab:base}. \textbf{Metrics.} \emph{Detection} (per collision event, ground truth from the cage contact sensor): TPR, false alarms per hour of collision-free flight (with exact Poisson 95\% intervals), empirical vs.\ target false-alarm rate, detection latency, ROC-AUC. \emph{Estimation:} direction error (deg), post-recovery distance to the obstacle (m). \emph{Memory:} phantom volume (m$^3$ of marked cost with no real obstacle, integrated over time), repeated collisions (contact within 0.5\,m of an earlier one), blocked-goal events. \emph{System:} mission success, crashes (attitude $>60^\circ$ or uncommanded altitude loss), collisions per run, time-to-goal, node run time ($<$5\,ms per cycle).
+We will measure detection per collision event using ground truth from the cage contact sensor: TPR, false alarms per hour of collision-free flight (exact Poisson 95\% intervals), empirical versus target false-alarm rate, detection latency and ROC-AUC. For estimation, we measure direction error (deg) and post-recovery distance to the obstacle (m).
+
+Memory metrics are phantom volume (m$^3$ of marked cost with no real obstacle, integrated over time), repeated collisions within 0.5\,m of an earlier collision, and blocked-goal events. System metrics are mission success, crashes (attitude $>60^\circ$ or uncommanded altitude loss), collisions per run, time-to-goal and node run time ($<$5\,ms per cycle).
 
 \begin{table}[t]
 \caption{Planned experiments.}
@@ -162,7 +182,7 @@ Ours & C1 & C2 & Full method\\
 \# & \textbf{Experiment} & \textbf{Data} & \textbf{RQ}\\
 \midrule
 E1 & Offline detection: ROC, TPR at matched false-alarm rate; features vs.\ $\|\mathbf{r}\|$ vs.\ raw acceleration; per speed and wind level & S1--S3 test logs & RQ1\\
-E2 & Calibration validity: target $\{1,5,20\}$/h vs.\ measured; in-distribution vs.\ unseen gusts/maneuvers & $\ge$50\,h free test set & RQ1\\
+E2 & Calibration validity: target $\{1,5,20\}$/h vs.\ measured; in-distribution vs.\ unseen gusts/maneuvers & $\ge$50\,h collision-free test set & RQ1\\
 E3 & Estimation: raw vs.\ residual direction; recovery distance & S1, S2 & RQ2\\
 E4 & Memory (closed loop, oracle detector): permanent vs.\ decay-only vs.\ C2 & S1, S2 & RQ3\\
 E5 & Full comparison B0--B4 vs.\ Ours $\times$ 3 speeds $\times$ 3 seeds & S1--S3 test & RQ4\\
@@ -171,10 +191,16 @@ E6 & Ablations/sensitivity: $\tau$, lethal-after-$h$, speed limit, LiDAR evidenc
 \end{tabularx}
 \end{table}
 
-\textbf{Experiments} are listed in Table~\ref{tab:exp}. \textbf{Compute budget.} With $\sim$41 test worlds, E5 has $6\times3\times3\times41\approx2{,}200$ episodes of $\sim$60\,s simulated flight ($\approx$37\,h); with PX4 SITL at a real-time factor $\approx$1 and 3 parallel containers this is $\approx$12\,h of wall-clock time. Fallback: one seed or two speeds for the full grid, keeping all seeds for B1 vs.\ Ours. \textbf{Statistics.} The world is the unit of analysis: 95\% bootstrap confidence intervals over worlds, McNemar tests for success/failure and Wilcoxon signed-rank tests for continuous metrics, with Holm correction. All hyperparameters, including the B1 threshold, are tuned only on calibration worlds. \textbf{Threats to validity.} Simulated contacts and IMU are idealized, so we add noise/bias and report results per noise level; the conformal guarantee is approximate under temporal correlation, so we report the empirical rate; sim-to-real transfer is not tested. Implementation risks are checked in week~1: whether collision-only models are invisible to the Gazebo \texttt{gpu\_lidar} sensor (fallback: a LiDAR visibility mask), and whether the caged x500 survives contacts in SITL without flipping (fallback: tuned contact stiffness and a lower speed range).
+The compute budget for E5 covers approximately 41 test worlds: $6\times3\times3\times41\approx2{,}200$ episodes, each lasting approximately 60\,s, for approximately 37\,h of simulated flight. At a PX4 SITL real-time factor of approximately 1, running 3 containers in parallel takes approximately 12\,h of wall-clock time. If needed, we will reduce the full grid to one seed or two speeds while retaining all seeds for B1 versus Ours.
+
+Worlds are the unit of statistical analysis. We will report 95\% bootstrap confidence intervals over worlds, McNemar tests for success/failure and Wilcoxon signed-rank tests for continuous metrics, with Holm correction. All hyperparameters, including the B1 threshold, will be tuned only on calibration worlds.
+
+Simulated contacts and IMU readings are idealized. We add noise/bias and report results for each noise level. Temporal correlation makes the conformal guarantee approximate, so we also report the empirical false-alarm rate. We do not test sim-to-real transfer.
+
+During the first week, we will check whether collision-only models are invisible to the Gazebo \texttt{gpu\_lidar} sensor and whether the caged x500 survives contacts in SITL without flipping. If the first check fails, we will use a LiDAR visibility mask. If the second fails, we will tune contact stiffness and lower the speed range.
 
 %==================================================================
-\section{Team Roles and Individual Contributions}
+\section{Team roles and individual contributions}
 
 \begin{table}[!h]
 \caption{Team roles.}
@@ -184,14 +210,18 @@ E6 & Ablations/sensitivity: $\tau$, lethal-after-$h$, speed limit, LiDAR evidenc
 \toprule
 \textbf{Member} & \textbf{Role} & \textbf{Responsibilities and deliverables}\\
 \midrule
-Egemen Çevik & Simulation, scenarios \& experiments & Docker/ROS~2/PX4 SITL/Gazebo bring-up; caged x500 with LiDAR, IMU, contact sensor; invisible-obstacle models; S1--S3 generators; voxel map and planner; episode runner, ground-truth labels; batch runs of E5\\
-Cumali Sarı & Detection \& estimation (C1) & Air Bumper detector for B1; controller-response model, residual node, features, logistic regression, conformal calibration, residual-based direction estimation; E1--E3; statistics\\
-Ahmet Enes Çiğdem & Reaction \& memory (C2) & Air Bumper recovery control and permanent memory for B1; collision-memory node, LiDAR evidence check, graded costs and speed limits; B3/B4 configs; E4, E6; figures\\
+Egemen Çevik & Simulation, scenarios and experiments & Docker/ROS~2/PX4 SITL/Gazebo setup; caged x500 with LiDAR, IMU, contact sensor; invisible-obstacle models; S1--S3 generators; voxel map and planner; episode runner, ground-truth labels; batch runs of E5\\
+Cumali Sarı & Detection and estimation (C1) & Air Bumper detector for B1; controller-response model, residual node, features, logistic regression, conformal calibration, residual-based direction estimation; E1--E3; statistics\\
+Ahmet Enes Çiğdem & Reaction and memory (C2) & Air Bumper recovery control and permanent memory for B1; collision-memory node, LiDAR evidence check, graded costs and speed limits; B3/B4 configs; E4, E6; figures\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Roles are given in Table~\ref{tab:team}. Each member writes and presents the part for their own module; contributions are documented by per-member git history and a weekly \texttt{CONTRIBUTIONS.md}. \textbf{Timeline:} week~1 (11--16 Nov) PX4 SITL + ROS~2 running and verification of the invisible-obstacle model and IMU collision spikes; week~2 S1--S3, voxel planner and B1; week~3 data collection and controller-response model; week~4 C1, E1--E3; week~5 C2, E4; week~6 E5, E6, statistics; week~7 report and slides; presentation on 30.12.2026. \textbf{Scope:} minimum = B1 + C1 + E1--E3; target = + C2, E4--E5; stretch = a real-world-like LiDAR model with partial glass returns, and a low-speed contact study.
+Each member will write and present their own module. We will document contributions through per-member git history and a weekly \texttt{CONTRIBUTIONS.md}.
+
+In week~1 (11--16 Nov), we will have PX4 SITL and ROS~2 running and verify invisible obstacles and IMU collision spikes. Week~2 covers S1--S3, the voxel planner and B1; week~3 covers data collection and the controller-response model; week~4 covers C1 and E1--E3; week~5 covers C2 and E4; week~6 covers E5, E6 and statistics; week~7 is for the report and slides. The presentation is on 30.12.2026.
+
+The minimum scope is B1 + C1 + E1--E3. Our target adds C2 and E4--E5. If time permits, we will also test a LiDAR model with partial glass returns to approximate real-world behavior and conduct a low-speed contact study.
 
 %==================================================================
 \FloatBarrier
