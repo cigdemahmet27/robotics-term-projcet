@@ -2,7 +2,8 @@
 
 **Topic:** Robot Failure Detection & Recovery for mobile-robot navigation
 **Primary paper:** ⭐ *Air Bumper* (Wang et al., ICRA 2024): IMU-based collision detection, reaction and collision-aware mapping
-**Working title:** *Bump Once, Remember Wisely: Calibrated IMU Collision Detection and Evidence-Aware, Forgetting Collision Memory for Mobile Robots Among Invisible and Moving Obstacles*
+**Title:** *Bump Once, Remember Wisely: Calibrated Collision Detection and Forgetting Memory for Robots Among Invisible Obstacles*
+**Team:** Egemen Çevik, Cumali Sarı, Ahmet Enes Çiğdem
 **Course:** YZV406E Robotics, Prof. Dr. Sanem Sarıel, Fall 2026–27
 **Status:** 📚 Proposal stage (no code yet)
 

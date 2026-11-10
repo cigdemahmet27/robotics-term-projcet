@@ -1,7 +1,9 @@
-# Bump Once, Remember Wisely: Calibrated IMU Collision Detection and Evidence-Aware, Forgetting Collision Memory for Mobile Robots Among Invisible and Moving Obstacles
+# Bump Once, Remember Wisely: Calibrated Collision Detection and Forgetting Memory for Robots Among Invisible Obstacles
 
 **YZV406E Robotics – Term Project Proposal (Round 1, 10.11.2026)**
-**Team:** [Member 1], [Member 2], [Member 3], [Member 4]
+**Team:** Egemen Çevik (150220012), Cumali Sarı (150230038), Ahmet Enes Çiğdem (150220079)
+
+> The submitted version is [`Proposal_AirBumper.pdf`](Proposal_AirBumper.pdf) (source `latex/proposal.tex`). This Markdown is kept in sync for easy reading.
 
 ---
 
@@ -11,7 +13,7 @@
 1. **Invisible obstacles.** Glass walls and doors, transparent plastic curtains and thin objects let laser beams pass through. The map shows free space and the planner drives straight into them.
 2. **Obstacles that enter unseen.** Something moving in from the sensor's blind spot (e.g., behind a 270° LiDAR) is not detected in time.
 
-In both cases a collision is **not avoidable from perception alone**. The robot must therefore (i) **detect** that it collided, (ii) **react** safely, and (iii) **remember** the obstacle so it does not hit it again. Remembering creates a new difficulty: if the obstacle was a person, a cart that is later moved, or a door that later opens, a permanent memory turns it into a **phantom wall**. A *false* collision detection does the same, and can make the goal unreachable. **Our problem:** detect collisions reliably with a *known* false-alarm rate, and remember collisions in a way that keeps invisible static obstacles while forgetting transient ones and false alarms.
+In both cases a collision is **not avoidable from perception alone**. The robot must therefore (i) **detect** that it collided, (ii) **react** safely, and (iii) **remember** the obstacle so it does not hit it again. Remembering creates a new difficulty: if the obstacle was a person, a cart that is later moved, or a door that later opens, a permanent memory turns it into a **phantom wall**. A *false* collision detection does the same, and can make the goal unreachable. The project addresses the suggested topic **Robot Failure Detection and Recovery**. **Our problem:** detect collisions reliably with a *known* false-alarm rate, and remember collisions in a way that keeps invisible static obstacles while forgetting transient ones and false alarms.
 
 **Primary reference paper.** R. Wang, Z. Guo, Y. Chen, X. Wang, B. M. Chen, "Air Bumper: A Collision Detection and Reaction Framework for Autonomous MAV Navigation," *IEEE ICRA 2024*, pp. 15735–15741 [1]. Air Bumper is an original research paper from an approved venue (ICRA) in the required period (2024).
 
@@ -24,13 +26,13 @@ In both cases a collision is **not avoidable from perception alone**. The robot 
 The paper shows recovery from glass doors in Gazebo and from glass and stick hits on a real drone (detection ≈ 0.18 s, recovery < 1 s, 10 trials).
 
 **Why this paper.**
-- It is one of the first frameworks to put collision detection, reaction **and** mapping into one standard LiDAR navigation stack using only the IMU.
+- It is an early framework that puts collision detection, reaction **and** mapping into one standard LiDAR navigation stack using only the IMU.
 - It turns failures into map knowledge ("failure as a sensor"), which is directly a **failure detection and recovery** problem, one of the suggested topics.
-- It is open source [2] and validated in simulation and on hardware.
+- It is open source [2] and validated in simulation and on hardware. Since its preprint (July 2023) it has been cited by follow-up work on contact-aware flight, e.g., whisker-based tactile navigation in *Nature Communications* [14] and a survey of LiDAR-based aerial vehicles in *IEEE/ASME T-Mech* [15] (7 citing papers on Semantic Scholar, Nov. 2026).
 - Its design choices are simple and explicit (a fixed threshold, permanent marks, a spherical body), which makes their limitations clear to analyze and possible to improve in a term project.
 - Related work handles failures differently: [13] predicts planner failures *before* they happen from LiDAR geometry, and [12] adapts edge costs online from contact feedback. Both assume the LiDAR sees every obstacle, which is exactly what fails with glass.
 
-**Relevance beyond drones.** Glass and transparent surfaces are common in offices, airports, malls and hospitals. Ground AMRs in such places mostly rely on physical bumper switches that only *stop* the robot and do not remember anything [3]. We therefore study the Air Bumper pipeline on a **ground robot**, where the same three needs (detect, react, remember) appear with new failure modes: braking, floor bumps, and a box-shaped body.
+**Relevance beyond drones.** Glass and transparent surfaces are common in offices, airports, malls and hospitals. Ground AMRs in such places often carry physical bumpers that only *stop* the robot and do not remember anything. We therefore study the Air Bumper pipeline on a **ground robot**. This is not a mere platform swap: the robot's own braking and turning produce accelerations comparable to impacts, floor bumps create vertical spikes, and a box-shaped footprint breaks the spherical contact model. The paper's detector and estimator must therefore be redesigned and re-validated, which is exactly where our contributions lie.
 
 ## 2. Environment, Benchmark, and Dataset
 
@@ -54,7 +56,7 @@ The paper shows recovery from glass doors in Gazebo and from glass and stick hit
 
 **Data split (by world):** 50% train / 20% calibration / 30% test for each set. S3 terrain types not seen in calibration are kept for an **out-of-distribution** test. Speeds: v_max ∈ {0.5, 1.0, 1.5} m/s.
 
-**Data volume:** ~10 h of simulated collision-free driving (for the false-alarm calibration, see §5) plus ~2,000 labeled collisions. At a real-time factor ≥ 1 with 2–3 parallel containers, this fits in a few overnight runs.
+**Data volume:** ~10 h of simulated collision-free driving for calibration (see §4), a **separate** collision-free test set of ≥ 50 h to verify false-alarm rates (headless runs are cheap), plus ~2,000 labeled collisions. At a real-time factor ≥ 1 with 2–3 parallel containers, this fits in a few overnight runs.
 
 ## 3. Challenges and Limitations of the Primary Paper
 
@@ -85,6 +87,7 @@ On top of this baseline we propose two contributions.
 - r(t) = a_IMU,xy(t) − â_xy(t)
 - â is the acceleration the robot *should* have from its own commands: the commanded velocity (v_cmd, ω_cmd) is passed through a first-order response model identified from collision-free data, giving â_x = dv̂/dt and â_y = v̂·ω̂.
 - The robot's own braking and turning are thus removed from the signal (L1, L3).
+- Model-based residuals are the standard tool for collision detection on manipulators [3]; we bring this idea to IMU-based detection on mobile robots.
 
 **(b) Window features → score.** Over a sliding window W = 0.2 s we compute:
 - the peak **horizontal norm** ‖r_xy‖ (removes the per-axis issue, L2)
@@ -97,8 +100,8 @@ A **logistic regression** (small, interpretable) maps these features to a collis
 **(c) Calibrated threshold.** We choose the alarm threshold by **split conformal calibration** [8], [9] on **collision-free** windows of the calibration worlds:
 - τ̂ = the ⌈(n+1)(1−α)⌉-th smallest score among n calibration windows.
 - Under exchangeability, a new collision-free window triggers with probability ≤ α. Counting non-overlapping windows, this sets the **false alarms per hour** in advance: ≈ α·3600/W.
-- We target {0.5, 1, 5} false alarms/h. For 1 FA/h with W = 0.2 s, α ≈ 5.6·10⁻⁵, which needs n ≥ 1/α ≈ 18,000 windows (≈ 1 h of driving; we collect ~10 h, see §2).
-- Consecutive windows are correlated, so we also report the **empirical** rate.
+- We target {1, 5, 20} false alarms/h. For 1 FA/h with W = 0.2 s, α ≈ 5.6·10⁻⁵, which needs n ≥ 1/α ≈ 18,000 windows (≈ 1 h of driving; we collect ~10 h, see §2).
+- Consecutive windows are correlated, so we verify the rate **empirically** on the ≥ 50 h test set with exact Poisson (Clopper–Pearson-type) 95% intervals. At 1/h this gives ~50 expected events, enough for a meaningful interval.
 
 **(d) Footprint-aware estimation.**
 - The direction is φ = atan2(−r_y, −r_x) computed from the **residual**, not the raw acceleration.
@@ -129,13 +132,13 @@ All three values are tuned on calibration worlds, with a sensitivity study. A ne
 1. A false-alarm rate fixed **before deployment** and verified on test worlds.
 2. Detection of diagonal and low-speed contacts.
 3. Smaller direction and contact-point errors on a non-spherical body.
-4. As few repeated collisions on static glass as permanent memory, but **no phantom walls** with transient obstacles or false alarms.
+4. **No phantom walls** with transient obstacles or false alarms, at the cost of a small, measured increase in repeated collisions on static glass (a mark becomes lethal only after a second hit). Whether this trade-off is favorable is tested in RQ3.
 
 ## 5. Research Questions and Evaluation Plan
 
 **RQ1 – Detection.** Does residual-based, calibrated detection (C1) achieve a higher true-positive rate than Air Bumper's fixed per-axis threshold **at the same false-alarm rate**, across speeds and floors? Does the calibrated rate hold on unseen terrain?
 **RQ2 – Estimation.** How much does footprint-aware, residual-based estimation reduce direction and contact-point errors?
-**RQ3 – Memory.** Does evidence-aware forgetting memory (C2) keep repeated collisions with static invisible obstacles as low as permanent memory, while avoiding phantom-wall failures with transient obstacles and false alarms?
+**RQ3 – Memory.** Does evidence-aware forgetting memory (C2) avoid phantom-wall failures with transient obstacles and false alarms, and how many extra repeated collisions with static invisible obstacles does this cost compared with permanent memory?
 **RQ4 – System.** Does the full system improve task success, collisions and time-to-goal over the baselines?
 
 **Baselines.**
@@ -152,7 +155,7 @@ All three values are tuned on calibration worlds, with a sensitivity study. A ne
 **Metrics.**
 - **Detection** (per collision event, ground truth from the contact sensor):
   - TPR
-  - **false alarms per hour** of collision-free driving
+  - **false alarms per hour** of collision-free driving (with exact Poisson 95% intervals)
   - empirical vs target false-alarm rate (calibration validity)
   - detection latency (ms)
   - ROC-AUC of the score
@@ -170,11 +173,13 @@ All three values are tuned on calibration worlds, with a sensitivity study. A ne
 | # | Experiment | Data | RQ |
 |---|---|---|---|
 | E1 | Offline detection: ROC, TPR at matched false-alarm rate; features vs ‖r‖ only vs raw acceleration; per speed | S1+S2+S3 test logs | RQ1 |
-| E2 | Calibration validity: target {0.5, 1, 5} FA/h vs measured; in-distribution vs unseen terrain | S3 + S1 collision-free segments | RQ1 |
+| E2 | Calibration validity: target {1, 5, 20} FA/h vs measured; in-distribution vs unseen terrain | ≥ 50 h collision-free test set | RQ1 |
 | E3 | Estimation accuracy: sphere vs footprint; raw vs residual | S1, S2 | RQ2 |
 | E4 | Memory study (closed loop): permanent vs decay-only vs evidence-aware (C2), with the oracle detector to isolate memory | S1 (static), S2 (transient) | RQ3 |
 | E5 | Full comparison B0–B4 vs Ours × 3 speeds × 3 seeds | S1–S3 test (+ S4 stretch) | RQ4 |
 | E6 | Ablations and sensitivity: τ values, lethal-after-h hits, speed mask on/off, LiDAR evidence on/off, window W | Calibration worlds | RQ3, RQ4 |
+
+**Compute budget.** With ~41 test worlds, E5 has 6 × 3 × 3 × 41 ≈ 2,200 episodes of ~60 s simulated time (≈ 37 h). At a real-time factor ≈ 2 with 3 parallel containers this is ≈ 6 h of wall-clock time. Fallback: one seed or two speeds for the full grid, keeping all seeds for B1 vs Ours.
 
 **Statistics.** The world is the unit of analysis. We report 95% bootstrap confidence intervals over worlds, McNemar tests for success/failure, and Wilcoxon signed-rank tests for continuous metrics, with Holm correction. All hyperparameters (including the B1 threshold) are tuned only on calibration worlds.
 
@@ -182,15 +187,15 @@ All three values are tuned on calibration worlds, with a sensitivity study. A ne
 - Simulated contacts and IMU are idealized. We add IMU noise/bias and report results per noise level.
 - The conformal guarantee is approximate under temporal correlation, so we report the empirical rate.
 - Sim-to-real transfer is not tested (a physical robot is not required by the course).
+- Implementation risks checked in week 1: whether collision-only models are invisible to the Gazebo `gpu_lidar` sensor (fallback: a LiDAR visibility mask), and the LiDAR mounting offset on the Jackal, which the visible/invisible rule handles by evaluating the contact point in the LiDAR frame via TF.
 
 ## 6. Team Roles and Individual Contributions
 
 | Member | Role | Responsibilities | Deliverables |
 |---|---|---|---|
-| [Member 1] | **Simulation & Scenarios Lead** | Docker/ROS 2/Nav2/Gazebo bring-up; Jackal with IMU, LiDAR, contact sensor; invisible-obstacle models; S1–S4 generators; episode runner, logging, ground-truth labels | Scenario suite, dataset, run scripts |
-| [Member 2] | **Detection & Estimation Lead (C1)** | Command-response model, residual node, features, logistic regression, conformal calibration, footprint contact estimation; E1–E3 | `collision_detector_node`, detection results |
-| [Member 3] | **Reaction & Memory Lead (C2)** | Diff-drive reaction node with `twist_mux`, collision-memory node, keepout/speed masks, LiDAR evidence check; E4, E6 | `reaction_node`, `collision_memory_node`, memory results |
-| [Member 4] | **Baselines & Evaluation Lead** | Air Bumper reimplementation (B1), B0/B2–B4 configs, metrics, batch experiments E5, statistics, figures | Baselines, result tables, statistical analysis |
+| Egemen Çevik (150220012) | **Simulation, Scenarios & Experiments** | Docker/ROS 2/Nav2/Gazebo bring-up; Jackal with IMU, LiDAR, contact sensor; invisible-obstacle models; S1–S4 generators; episode runner, ground-truth labels; B0/B2 configs; batch runs of E5 | Scenario suite, dataset, run scripts |
+| Cumali Sarı (150230038) | **Detection & Estimation (C1)** | Air Bumper detector for B1; command-response model, residual node, features, logistic regression, conformal calibration, footprint contact estimation; E1–E3; statistics | `collision_detector_node`, detection results |
+| Ahmet Enes Çiğdem (150220079) | **Reaction & Memory (C2)** | Air Bumper reaction and permanent memory for B1; diff-drive reaction node, collision-memory node, keepout/speed masks, LiDAR evidence check; B3/B4 configs; E4, E6; figures | `reaction_node`, `collision_memory_node`, memory results |
 
 Everyone writes the report section and presents the part for their own module. Contributions are documented through per-member git history and a weekly `CONTRIBUTIONS.md`.
 
@@ -214,8 +219,8 @@ Everyone writes the report section and presents the part for their own module. C
 [1] R. Wang, Z. Guo, Y. Chen, X. Wang, and B. M. Chen, "Air Bumper: A collision detection and reaction framework for autonomous MAV navigation," in *Proc. IEEE Int. Conf. Robot. Autom. (ICRA)*, 2024, pp. 15735–15741, doi: 10.1109/ICRA57147.2024.10611410.
 [2] R. Wang *et al.*, "Air Bumper," GitHub repository, 2024. [Online]. Available: https://github.com/ryrobotics/air_bumper
 [3] S. Haddadin, A. De Luca, and A. Albu-Schäffer, "Robot collisions: A survey on detection, isolation, and identification," *IEEE Trans. Robot.*, vol. 33, no. 6, pp. 1292–1312, 2017.
-[4] S. Macenski, F. Martín, R. White, and J. Ginés Clavero, "The Marathon 2: A navigation system," in *Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)*, 2020, pp. 2718–2725.
-[5] D. V. Lu, D. Hershberger, and W. D. Smart, "Layered costmaps for context-sensitive navigation," in *Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)*, 2014, pp. 709–715.
+[4] S. Macenski, F. Martín, R. White, and J. Ginés Clavero, "The Marathon 2: A navigation system," in *Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)*, 2020, pp. 2718–2725, doi: 10.1109/IROS45743.2020.9341207.
+[5] D. V. Lu, D. Hershberger, and W. D. Smart, "Layered costmaps for context-sensitive navigation," in *Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)*, 2014, pp. 709–715, doi: 10.1109/IROS.2014.6942636.
 [6] N. Koenig and A. Howard, "Design and use paradigms for Gazebo, an open-source multi-robot simulator," in *Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)*, 2004, pp. 2149–2154.
 [7] D. Perille, A. Truong, X. Xiao, and P. Stone, "Benchmarking metric ground navigation," in *Proc. IEEE Int. Symp. Safety, Security, and Rescue Robotics (SSRR)*, 2020, pp. 116–121.
 [8] V. Vovk, A. Gammerman, and G. Shafer, *Algorithmic Learning in a Random World*. New York, NY, USA: Springer, 2005.
@@ -224,3 +229,5 @@ Everyone writes the report section and presents the part for their own module. C
 [11] S. Macenski, T. Foote, B. Gerkey, C. Lalancette, and W. Woodall, "Robot Operating System 2: Design, architecture, and uses in the wild," *Science Robotics*, vol. 7, no. 66, eabm6074, 2022.
 [12] B. He, G. Chen, W. Wang, J. Zhang, C. Fermüller, and Y. Aloimonos, "Interactive-FAR: Interactive, fast and adaptable routing for navigation among movable obstacles in complex unknown environments," in *Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)*, 2024, pp. 5402–5409, doi: 10.1109/IROS58592.2024.10802169.
 [13] N. Mohammad, J. Higgins, and N. Bezzo, "A GP-based robust motion planning framework for agile autonomous robot navigation and recovery in unknown environments," in *Proc. IEEE Int. Conf. Robot. Autom. (ICRA)*, 2024, pp. 2418–2424, doi: 10.1109/ICRA57147.2024.10610382.
+[14] C. Ye, G. de Croon, and S. Hamaza, "Whisker-based tactile flight for tiny drones," *Nature Communications*, 2025 (arXiv:2510.03119).
+[15] Y. Ren, Y. Cai, H. Li, N. Chen, F. Zhu, L. Yin, F. Kong, R. Li, and F. Zhang, "A survey on LiDAR-based autonomous aerial vehicles," *IEEE/ASME Trans. Mechatronics*, 2025, doi: 10.1109/TMECH.2025.3599633.

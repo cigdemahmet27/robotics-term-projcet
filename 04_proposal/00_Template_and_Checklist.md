@@ -4,8 +4,9 @@
 
 ## 0. 🚨 Submission today: 10.11.2026
 
-- [ ] Fill in the 4 team member names: title block + Table V in `latex/proposal.tex` (and in `Proposal_AirBumper.md`)
-- [ ] Check the Air Bumper citation count on Google Scholar ("well-cited" rule)
+- [x] Team names and student IDs (3 members) in the title block and Table V
+- [x] "Well-cited": 7 citing papers on Semantic Scholar (Nov. 2026), incl. Nature Communications and IEEE/ASME T-Mech; mentioned in Section 1. ⚠️ Optionally replace with the Google Scholar count
+- [x] Friend's review applied (shorter title, citation evidence, Haddadin claim fixed, FA-rate test set + Poisson intervals, RQ3 rephrased, compute budget, risks, topic statement, ground-robot justification)
 - [x] PDF in IEEE two-column format: [`Proposal_AirBumper.pdf`](Proposal_AirBumper.pdf) (source: `latex/proposal.tex`). **4 pages in total, references included** ✅ within the limit
 - [ ] After any text change: edit `latex/proposal.tex`, run `pdflatex proposal.tex` twice in `latex/`, copy `proposal.pdf` to `Proposal_AirBumper.pdf`
 - [ ] One member submits (only one!). Late submission is **not accepted**. Not submitting = **VF**
@@ -27,7 +28,7 @@
 | **Go beyond implementing an existing system** | The reimplementation is only baseline B1. C1 and C2 are new | ✅ |
 | **Systematic investigation, well-designed evaluation** | 4 RQs, 6 baselines, metrics, 6 experiments, statistics | ✅ |
 | Feasible, clearly scoped | Python nodes, standard Nav2 filters, minimum/target/stretch levels | ✅ |
-| Each student has distinct, documented responsibilities | 4 roles in Section 6 | ⚠️ names missing |
+| Each student has distinct, documented responsibilities | 3 named roles in Section 6 (Table V) | ✅ |
 | Complete references, one consistent style | IEEE style, [1]–[13], all cited in the text | ✅ |
 | Max 4 pages + 1 page of references | PDF is 4 pages including references | ✅ |
 
