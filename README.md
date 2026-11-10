@@ -2,7 +2,7 @@
 
 **Topic:** Robot Failure Detection & Recovery for mobile-robot navigation
 **Primary paper:** ⭐ *Air Bumper* (Wang et al., ICRA 2024): IMU-based collision detection, reaction and collision-aware mapping
-**Title:** *Bump Once, Remember Wisely: Calibrated Collision Detection and Forgetting Memory for Robots Among Invisible Obstacles*
+**Title:** *Bump Once, Remember Wisely: Calibrated Collision Detection and Forgetting Memory for Aerial Robots Among Invisible Obstacles*
 **Team:** Egemen Çevik, Cumali Sarı, Ahmet Enes Çiğdem
 **Course:** YZV406E Robotics, Prof. Dr. Sanem Sarıel, Fall 2026–27
 **Status:** 📚 Proposal stage (no code yet)
@@ -62,13 +62,13 @@ Term_projcet/
 1. **The problem:** a robot's LiDAR can't see glass, and can't see things coming from its blind spot. So collisions will happen.
 2. **The primary paper (Air Bumper)** detects a collision from an IMU spike (fixed threshold 20 m/s²), bounces away, and draws the obstacle into the map **forever**.
 3. **Its weaknesses:**
-   - The fixed threshold gives an unknown number of false alarms and misses (e.g., the robot's own braking, diagonal hits).
+   - The fixed threshold gives an unknown number of false alarms and misses (e.g., the drone's own braking, wind gusts, diagonal hits).
    - Permanent marks turn people, moved carts, opened doors and false alarms into **phantom walls**.
    - There are no detection statistics.
 4. **We will:**
    - **(C1)** detect collisions from the *unexpected* acceleration (measured minus what the robot's own commands explain), with a threshold **calibrated** to a chosen false-alarm rate.
    - **(C2)** use a collision memory that **checks the LiDAR** (glass or a visible object?), **fades over time** unless the obstacle is hit again, and slows the robot near uncertain spots instead of blocking them.
-5. **We test it** with ROS 2 + Nav2 + Gazebo on a Jackal robot, in generated worlds with glass, moving/removed obstacles, and bumpy floors. Zero cost, no real robot.
+5. **We test it** on a **caged quadrotor drone (as in the paper)** with PX4 SITL + ROS 2 + Gazebo, in generated worlds with glass, moving/removed obstacles, and wind gusts. Zero cost, no real robot.
 
 ## 🏷️ Conventions
 

@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the term project for YZV406E Robotics (Prof. Dr. Sanem Sarıel, Fall 2026–27). It is a **research repo at the proposal stage**: there is no code, build system, or tests yet. Topic: failure detection & recovery for mobile-robot navigation (ROS 2 Nav2 + Gazebo). `README.md` holds the folder map and reading order. Update this file once an implementation exists.
+This is the term project for YZV406E Robotics (Prof. Dr. Sanem Sarıel, Fall 2026–27). It is a **research repo at the proposal stage**: there is no code, build system, or tests yet. Topic: failure detection & recovery for aerial-robot (MAV) navigation (ROS 2 + PX4 SITL + Gazebo). `README.md` holds the folder map and reading order. Update this file once an implementation exists.
 
 Primary paper (decided 10.11.2026): **Air Bumper** (Wang et al., ICRA 2024). The earlier GP-paper direction is archived in `99_archive/gp_direction/`.
 
 Layout:
 - `00_course/`: `Project Proposal Guidelines.pdf` (the **authoritative source**; read it with `pdftotext`) and `requirements_summary.md`.
 - `01_papers/`: the 5 team papers (`pdf/`) plus one explanation file per paper and a comparison `README.md`. Venues and years were verified from the PDFs.
-- `04_proposal/`: `00_Template_and_Checklist.md` (homework analysis, section template, to-do list) and `Proposal_AirBumper.md` (the submission text, single source of truth). Plan: ROS 2 Jazzy + Nav2 + Gazebo Harmonic, Jackal ground robot; glass = collision-only models. C1 = residual-based (IMU minus command-explained acceleration), conformal-calibrated collision detection with footprint-aware contact estimation. C2 = LiDAR-evidence-aware, decaying collision memory via Nav2 keepout + speed filter masks. Baseline B1 = Air Bumper reimplemented in ROS 2.
+- `04_proposal/`: `00_Template_and_Checklist.md` (homework analysis, section template, to-do list) and `Proposal_AirBumper.md` (the submission text, single source of truth). Plan (**aerial robot only**, the team rejected a ground-robot version): ROS 2 Jazzy + PX4 SITL (uXRCE-DDS) + Gazebo Harmonic, caged x500 quadrotor with a Mid-360-like 3D LiDAR; own Python voxel map + EDT + A* planner; glass = collision-only models. C1 = residual-based (IMU minus PX4-command-explained acceleration), conformal-calibrated collision detection, residual-based direction. C2 = LiDAR-evidence-aware, decaying collision memory as graded voxel costs + speed limits. Baseline B1 = Air Bumper reimplemented in ROS 2.
 - `99_archive/`: superseded material (GP direction, old Sentinel options).
 - `GLOSSARY.md`: definitions of terms.
 

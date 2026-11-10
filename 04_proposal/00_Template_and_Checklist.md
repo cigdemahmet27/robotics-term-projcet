@@ -6,7 +6,8 @@
 
 - [x] Team names and student IDs (3 members) in the title block and Table V
 - [x] "Well-cited": 7 citing papers on Semantic Scholar (Nov. 2026), incl. Nature Communications and IEEE/ASME T-Mech; mentioned in Section 1. ⚠️ Optionally replace with the Google Scholar count
-- [x] Friend's review applied (shorter title, citation evidence, Haddadin claim fixed, FA-rate test set + Poisson intervals, RQ3 rephrased, compute budget, risks, topic statement, ground-robot justification)
+- [x] Friend's review applied (shorter title, citation evidence, Haddadin claim fixed, FA-rate test set + Poisson intervals, RQ3 rephrased, compute budget, risks, topic statement)
+- [x] Platform changed back to the **aerial robot** (caged quadrotor, PX4 SITL), as the team wants to improve the drone itself
 - [x] PDF in IEEE two-column format: [`Proposal_AirBumper.pdf`](Proposal_AirBumper.pdf) (source: `latex/proposal.tex`). **4 pages in total, references included** ✅ within the limit
 - [ ] After any text change: edit `latex/proposal.tex`, run `pdflatex proposal.tex` twice in `latex/`, copy `proposal.pdf` to `Proposal_AirBumper.pdf`
 - [ ] One member submits (only one!). Late submission is **not accepted**. Not submitting = **VF**
@@ -27,7 +28,7 @@
 | Propose a **potentially effective solution** | C1 (calibrated detection) + C2 (forgetting memory) | ✅ |
 | **Go beyond implementing an existing system** | The reimplementation is only baseline B1. C1 and C2 are new | ✅ |
 | **Systematic investigation, well-designed evaluation** | 4 RQs, 6 baselines, metrics, 6 experiments, statistics | ✅ |
-| Feasible, clearly scoped | Python nodes, standard Nav2 filters, minimum/target/stretch levels | ✅ |
+| Feasible, clearly scoped | Python nodes, PX4 SITL, lightweight voxel planner, minimum/target/stretch levels | ✅ |
 | Each student has distinct, documented responsibilities | 3 named roles in Section 6 (Table V) | ✅ |
 | Complete references, one consistent style | IEEE style, [1]–[13], all cited in the text | ✅ |
 | Max 4 pages + 1 page of references | PDF is 4 pages including references | ✅ |
@@ -54,7 +55,7 @@ Each section shows: what the PDF requires → what must be inside → our status
 - [x] Full citation of the primary paper + venue + year
 - [x] What the paper does (detect → estimate → react → remember, with its numbers)
 - [x] **Why this paper**: significance, impact, relevance to our problem
-- [x] Industry relevance (glass in offices/airports/hospitals; AMR bumpers only stop the robot)
+- [x] Significance (indoor MAVs for inspection/warehouses/search and rescue fly near glass and people)
 - [ ] ⚠️ Add the citation count once checked ("cited N times as of Nov 2026")
 
 ### 2. Environment, Benchmark, or Dataset (~0.6 page)
@@ -78,7 +79,7 @@ Each section shows: what the PDF requires → what must be inside → our status
 - [x] C2 in technical detail (LiDAR evidence, decaying belief, merging, graded keepout + speed masks)
 - [x] Each contribution mapped to the limitations it fixes
 - [x] Expected improvements, stated explicitly
-- [x] Implementation plan (ROS 2 nodes, no Nav2 changes)
+- [x] Implementation plan (ROS 2 Python nodes + PX4 offboard setpoints)
 
 ### 5. Research Questions and Evaluation Plan (~0.8 page)
 - [x] Specific RQs (RQ1–RQ4)
@@ -114,7 +115,7 @@ Each section shows: what the PDF requires → what must be inside → our status
 | GPU LiDAR ignores models without visuals (our "glass") | Spawn a collision-only box and look at `/scan` in RViz | Use a LiDAR visibility mask / custom sensor filter |
 | A collision produces a clear IMU spike in Gazebo | Drive into a wall at 0.5/1.0/1.5 m/s and plot `/imu` | Raise IMU rate, tune contact stiffness |
 | Contact sensor gives time + position of the contact | Echo `/contacts` during a crash | Use the min LiDAR range to the true obstacle geometry |
-| Nav2 keepout/speed filter masks update live from a topic | Publish a changing `OccupancyGrid` mask | A small custom costmap layer |
+| Caged x500 survives contacts in PX4 SITL without flipping | Fly into a wall at 0.5/1.0/1.5 m/s | Tune contact stiffness, lower the speed range |
 | Moving models in Gazebo Harmonic (joint/trajectory controller) | Box crossing a corridor | Teleport with a `set_pose` service at a fixed rate |
 
 ## 5. After round 1
